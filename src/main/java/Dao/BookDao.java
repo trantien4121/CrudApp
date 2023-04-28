@@ -2,6 +2,7 @@ package Dao;
 
 import Bean.BookBean;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -46,6 +47,40 @@ public class BookDao {
         }
     }
 
+    public static BookBean addBook(String bookId, String bookName, String author, int quantity, int price, String image
+    , String bookType){
+
+        //step1: Connect to database
+        ConnectDB cn = new ConnectDB();
+        cn.connect();
+
+        //step2:
+        if(bookId.equals("")){
+            return null;
+        }
+        else{
+            String sql = "insert into Book(bookId, bookName, author, quantity, price, image, bookType)\r\n" +
+                    "values(?,?,?,?,?,?,?);";
+            BookBean insertedBook = null;
+            try {
+                PreparedStatement ps = cn.conn.prepareStatement(sql);
+                ps.setString(1, bookId);
+                ps.setString(2, bookName);
+                ps.setString(3, author);
+                ps.setInt(4, quantity);
+                ps.setInt(5, price);
+                ps.setString(6, image);
+                ps.setString(7, bookType);
+                insertedBook = new BookBean(bookId, bookName, author, quantity, price, image, bookType);
+
+                ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return insertedBook;
+        }
+    }
+
     public static void main(String[] args) {
         ArrayList<BookBean> ds = new ArrayList<BookBean>();
         ds = BookDao.getBook();
@@ -53,5 +88,9 @@ public class BookDao {
             System.out.println(b.getBookId() + "--" + b.getBookName() + "--" + b.getAuthor() + "--" + b.getQuantity() +
                     "--" + b.getPrice() + "--" + b.getImage() + "--" + b.getBookType());
         }
+
+        BookBean iBook = BookDao.addBook("btk01", "Sách tham khảo", "Trần Tiến", 12,
+                50000, "BookImages/b7.jpg", "TK");
+        System.out.println(iBook.getBookName());
     }
 }

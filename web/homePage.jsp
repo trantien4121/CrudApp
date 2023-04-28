@@ -1,6 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="Bean.BookBean" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%--
   Created by IntelliJ IDEA.
   User: tien.tran2
@@ -31,7 +31,8 @@
         }
 
         .table-responsive {
-            margin: 30px 0;
+            margin: 100px 0;
+
         }
 
         .table-wrapper {
@@ -357,89 +358,35 @@
                 </tr>
                 </thead>
                 <tbody>
-                <%--                <tr>--%>
-                <%--                    <td>--%>
-                <%--							<span class="custom-checkbox">--%>
-                <%--								<input type="checkbox" id="checkbox1" name="options[]" value="1">--%>
-                <%--								<label for="checkbox1"></label>--%>
-                <%--							</span>--%>
-                <%--                    </td>--%>
-                <%--                    <td>Thomas Hardy</td>--%>
-                <%--                    <td>thomashardy@mail.com</td>--%>
-                <%--                    <td>89 Chiaroscuro Rd, Portland, USA</td>--%>
-                <%--                    <td>(171) 555-2222</td>--%>
-                <%--                    <td>--%>
-                <%--                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons"--%>
-                <%--                                                                                         data-toggle="tooltip"--%>
-                <%--                                                                                         title="Edit">&#xE254;</i></a>--%>
-                <%--                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons"--%>
-                <%--                                                                                             data-toggle="tooltip"--%>
-                <%--                                                                                             title="Delete">&#xE872;</i></a>--%>
-                <%--                    </td>--%>
-                <%--                </tr>--%>
 
-                <%--                <c:forEach var="b" items="${dsBook}">--%>
-                <%--                    <tr>--%>
-                <%--                        <td>--%>
-                <%--							<span class="custom-checkbox">--%>
-                <%--								<input type="checkbox" id="checkbox1" name="options[]" value="1">--%>
-                <%--								<label for="checkbox1"></label>--%>
-                <%--							</span>--%>
-                <%--                        </td>--%>
-                <%--                        <td>${b.getBookId()}</td>--%>
-                <%--                        <td>${b.getBookName()}</td>--%>
-                <%--                        <th>${b.getAuthor()}</th>--%>
-                <%--                        <th>${b.getQuantity()}</th>--%>
-                <%--                        <th>${b.getPrice()}</th>--%>
-                <%--                        <th>${b.getImage()}</th>--%>
-                <%--                        <th>${b.getType()}</th>--%>
-                <%--                        <td>--%>
-                <%--                            <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons"--%>
-                <%--                                                                                             data-toggle="tooltip"--%>
-                <%--                                                                                             title="Edit">&#xE254;</i></a>--%>
-                <%--                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons"--%>
-                <%--                                                                                                 data-toggle="tooltip"--%>
-                <%--                                                                                                 title="Delete">&#xE872;</i></a>--%>
-                <%--                        </td>--%>
-                <%--                    </tr>--%>
-                <%--                </c:forEach>--%>
-                <%
-                    ArrayList<BookBean> dsBook = (ArrayList<BookBean>) request.getAttribute("dsBook");
+                <c:forEach var="b" items="${dsBook}">
+                    <tr>
+                        <td>
+                            <span class="custom-checkbox">
+                                <input type="checkbox" id="checkbox${b.getBookId()}" name="options[]" value="1">
+                                <label for="checkbox${b.getBookId()}"></label>
+                            </span>
+                        </td>
+                        <td>${b.getBookId()}</td>
+                        <td>${b.getBookName()}</td>
+                        <th>${b.getAuthor()}</th>
+                        <th>${b.getQuantity()}</th>
+                        <th>${b.getPrice()}</th>
+                        <th>
+                            <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
+                        </th>
+                        <th>${b.getBookType()}</th>
 
-                    for (BookBean b : dsBook) {
-                %>
-                <tr>
-                    <td>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="checkbox1" name="options[]" value="1">
-								<label for="checkbox1"></label>
-							</span>
-                    </td>
-                    <td><%=b.getBookId()%>
-                    </td>
-                    <td><%=b.getBookName()%>
-                    </td>
-                    <th><%=b.getAuthor()%>
-                    </th>
-                    <th><%=b.getQuantity()%>
-                    </th>
-                    <th><%=b.getPrice()%>
-                    </th>
-                    <th>
-                        <img src="<%=b.getImage()%>" alt="Girl in a jacket" width="40" height="40">
-                    </th>
-                    <th><%=b.getBookType()%>
-                    </th>
-                    <td>
-                        <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons"
-                                                                                         data-toggle="tooltip"
-                                                                                         title="Edit">&#xE254;</i></a>
-                        <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons"
+                        <td>
+                            <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i class="material-icons"
                                                                                              data-toggle="tooltip"
-                                                                                             title="Delete">&#xE872;</i></a>
-                    </td>
-                </tr>
-                <%}%>
+                                                                                             title="Edit">&#xE254;</i></a>
+                            <a href="#deleteEmployeeModal${b.getBookId()}" class="delete" data-toggle="modal"><i class="material-icons"
+                                                                                                 data-toggle="tooltip"
+                                                                                                 title="Delete">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                </c:forEach>
 
                 </tbody>
             </table>
@@ -462,27 +409,39 @@
 <div id="addEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form>
+            <form action="CrudBookActionServlet" method="post" enctype= "multipart/form-data">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Employee</h4>
+                    <h4 class="modal-title">Add New Book</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" class="form-control" required>
+                        <label for="bookId">BookId</label>
+                        <input type="text" class="form-control" name="txtBookId" id="bookId" required>
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" required>
+                        <label for="bookName">BookName</label>
+                        <input type="text" class="form-control" id="bookName" name="txtBookName" required>
                     </div>
                     <div class="form-group">
-                        <label>Address</label>
-                        <textarea class="form-control" required></textarea>
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" id="author" name="txtAuthor" required>
                     </div>
                     <div class="form-group">
-                        <label>Phone</label>
-                        <input type="text" class="form-control" required>
+                        <label for="quantity">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="txtQuantity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="number" class="form-control" id="price" name="txtPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Image</label>
+                        <input type="file" class="form-control" id="image" name="txtImage" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookType">bookType</label>
+                        <input type="text" class="form-control" id="bookType" name="txtBookType" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -494,7 +453,7 @@
     </div>
 </div>
 <!-- Edit Modal HTML -->
-<div id="editEmployeeModal" class="modal fade">
+<div id="editEmployeeModal${b.getBookId()}" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
             <form>
@@ -505,7 +464,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name = "" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
