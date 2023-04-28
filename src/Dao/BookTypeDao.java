@@ -10,8 +10,8 @@ public class BookTypeDao {
     public static ArrayList<BookTypeBean> getBookType(){
         ArrayList<BookTypeBean> dsBookType = new ArrayList<BookTypeBean>();
         try {
-            //step1: connect to database
 
+            //step1: connect to database
             ConnectDB cn = new ConnectDB();
             cn.connect();
 
@@ -27,10 +27,12 @@ public class BookTypeDao {
                 dsBookType.add(new BookTypeBean(bookType, bookTypeName));
             }
 
-            //step4: Close connection
+            //step4: Close connection and return dsBookType
             rs.close();
             cn.conn.close();
+
             return dsBookType;
+
         }catch(Exception e) {
             e.printStackTrace();
             return null;

@@ -26,15 +26,16 @@ public class ConnectDB {
             System.out.println("driver not found!");
             e.printStackTrace();
 
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+//        finally {
+//            try {
+//                if (conn != null) {
+//                    conn.close();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public static void main(String[] args) {
