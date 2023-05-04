@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/CrudBookActionServlet")
-public class CrudBookActionServlet extends HttpServlet {
+@WebServlet("/UpdateBookActionServlet")
+public class UpdateBookActionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    public CrudBookActionServlet() {
+    public UpdateBookActionServlet() {
         super();
     }
 
@@ -37,6 +37,7 @@ public class CrudBookActionServlet extends HttpServlet {
         String author = "";
         int quantity = 0;
         int price = 0;
+        String imageName = new String();
         String imagePath = "";
         String bookType = "";
 
@@ -58,7 +59,7 @@ public class CrudBookActionServlet extends HttpServlet {
                 if (!fileItem.isFormField()) {
 
                     // xử lý file
-                    String imageName = fileItem.getName();
+                    imageName = fileItem.getName();
                     if (!imageName.equals("")) {
 
                         // Lấy đường dẫn hiện tại
@@ -114,43 +115,31 @@ public class CrudBookActionServlet extends HttpServlet {
         }
 
 
-        //Add Book
-        BookDao.addBook(bookId, bookName, author, quantity, price, imagePath, bookType);
+//        String bookIdUpdate = request.getParameter("btnUpdateBook");
+//
+//        String bookNameUpdate = request.getParameter("txtBookNameUpdate");
+//        String authorUpdate = request.getParameter("txtAuthorUpdate");
+//        int quantityUpdate = Integer.parseInt(request.getParameter("txtQuantityUpdate"));
+//        int priceUpdate = Integer.parseInt(request.getParameter("txtPriceUpdate"));
+//        String bookTypeUpdate = request.getParameter("txtBookTypeUpdate");
+//
+//        System.out.println(bookIdUpdate);
 
-        //Delete Book
-        if (request.getParameter("btnDeleteBook") != null) {
-            String bookIdDelete = request.getParameter("btnDeleteBook");
-            BookDao.deleteBook(bookIdDelete);
+        System.out.println("Tên ảnh là: "+ imageName);
+
+        //Nếu đã update ảnh
+        if(!imageName.equals("")){
+            BookBean updatedBook = BookDao.updateBook(bookId, bookName, author, quantity, price, imagePath, bookType);
+            System.out.println("update book success!!");
         }
+        //Nếu chưa update ảnh
+        else{
+            BookBo bBo = new BookBo();
+            BookBean bGet = bBo.getBook(bookId);
+            String curImagePath = bGet.getImage();
 
-        if(request.getParameter("btnDeleteListBook") != null){
-            System.out.println("Begin delete list book...");
-            if(request.getParameterValues("bookItems") != null){
-                String[] dsDeletedBookId = request.getParameterValues("bookItems");
-                for(String dB : dsDeletedBookId){
-                    BookDao.deleteBook(dB);
-                }
-                System.out.println("Delete list book success!");
-            }else{
-                System.out.println("Delete list book failed!");
-            }
-
+            BookBean updatedBook = BookDao.updateBook(bookId, bookName, author, quantity, price, curImagePath, bookType);
         }
-//        //Upadate Book: enctype = "multipart/form-data" -> request.getParameter always return null
-
-        //Delete Book that checked
-//        if(request.getParameterValues("bookItems") != null){
-//            String[] dsDeletedBookId = request.getParameterValues("bookItems"); //getBookId() values
-//            if(request.getParameter("btnDeleteListBook")!=null){
-//                for(String dB: dsDeletedBookId){
-//                    BookDao.deleteBook(dB);
-//                }
-//            }
-//        }else{
-//            System.out.println("Delete list book failed! cause by: request.getParameterValues() is NULL");
-//        }
-
-
         response.sendRedirect("Home");
 
     }
@@ -159,3 +148,4 @@ public class CrudBookActionServlet extends HttpServlet {
         doGet(request, response);
     }
 }
+

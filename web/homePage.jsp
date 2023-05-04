@@ -342,10 +342,10 @@
                 <thead>
                 <tr>
                     <th>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
-							</span>
+<%--							<span class="custom-checkbox">--%>
+<%--								<input type="checkbox" id="selectAll">--%>
+<%--								<label for="selectAll"></label>--%>
+<%--							</span>--%>
                     </th>
                     <th>ID</th>
                     <th>Name</th>
@@ -361,9 +361,10 @@
 
                 <c:forEach var="b" items="${dsBook}">
                     <tr>
+                        <form action="CrudBookActionServlet" method="post">
                         <td>
                             <span class="custom-checkbox">
-                                <input type="checkbox" id="checkbox${b.getBookId()}" name="options[]" value="1">
+                                <input type="checkbox" name="bookItems" id="checkbox${b.getBookId()}" value="${b.getBookId()}">
                                 <label for="checkbox${b.getBookId()}"></label>
                             </span>
                         </td>
@@ -378,14 +379,103 @@
                         <th>${b.getBookType()}</th>
 
                         <td>
-                            <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i class="material-icons"
-                                                                                             data-toggle="tooltip"
-                                                                                             title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal${b.getBookId()}" class="delete" data-toggle="modal"><i class="material-icons"
-                                                                                                 data-toggle="tooltip"
-                                                                                                 title="Delete">&#xE872;</i></a>
+                            <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i
+                                    class="material-icons"
+                                    data-toggle="tooltip"
+                                    title="Edit">&#xE254;</i></a>
+                            <a href="#deleteEmployeeModal${b.getBookId()}" class="delete" data-toggle="modal"><i
+                                    class="material-icons"
+                                    data-toggle="tooltip"
+                                    title="Delete">&#xE872;</i></a>
                         </td>
+
+                        <!--Modal Delete 1 Book-->
+                        <div id="deleteEmployeeModal${b.getBookId()}" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+<%--                                    <form action="CrudBookActionServlet" method="post">--%>
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Delete Book</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete these Book with bookId = ${b.getBookId()}?</p>
+                                            <p class="text-warning"><small>This action cannot be undone.</small></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn btn-default" data-dismiss="modal"
+                                                   value="Cancel">
+                                            <button type="submit" name="btnDeleteBook"
+                                            class="btn btn-danger" value="${b.getBookId()}">Delete</button>
+                                        </div>
+<%--                                    </form>--%>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+
+                        <!--Modal Update Book-->
+                        <div id="editEmployeeModal${b.getBookId()}" class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="UpdateBookActionServlet" method="post" enctype="multipart/form-data">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Update Book</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="bookIdUpdate">BookId</label>
+                                                <input type="text" class="form-control" name="txtBookId" id="bookIdUpdate"
+                                                       value="${b.getBookId()}" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="bookNameUpdate">BookName</label>
+                                                <input type="text" class="form-control" id="bookNameUpdate" name="txtBookName"
+                                                       value="${b.getBookName()}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="authorUpdate">Author</label>
+                                                <input type="text" class="form-control" id="authorUpdate" name="txtAuthor"
+                                                       value="${b.getAuthor()}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="quantityUpdate">Quantity</label>
+                                                <input type="number" class="form-control" id="quantityUpdate" name="txtQuantity"
+                                                       value="${b.getQuantity()}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="priceUpdate">Price</label>
+                                                <input type="number" class="form-control" id="priceUpdate" name="txtPrice"
+                                                       value="${b.getPrice()}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="imageUpdate">Image</label>
+                                                <br>
+                                                <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
+
+                                                <input type="file" class="form-control" id="imageUpdate" name="txtImage"
+                                                       value="${b.getImage()}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="bookTypeUpdate">bookType</label>
+                                                <input type="text" class="form-control" id="bookTypeUpdate" name="txtBookType"
+                                                       value="${b.getBookType()}">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+<%--                                            <input type="text" class="btn btn-success" name="btnUpdateBook" value="Add">--%>
+                                            <button type="submit" name="btnUpdateBook" class="btn btn-success" value="${b.getBookId()}">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </tr>
+
                 </c:forEach>
 
                 </tbody>
@@ -409,7 +499,7 @@
 <div id="addEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="CrudBookActionServlet" method="post" enctype= "multipart/form-data">
+            <form action="CrudBookActionServlet" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h4 class="modal-title">Add New Book</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -446,63 +536,32 @@
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-success" value="Add">
+<%--                    <input type="submit" class="btn btn-success" name="btnAddBook" value="Add">--%>
+                    <button type="submit" class="btn btn-success" name="btnAddBook" value="Add">Add</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<!-- Edit Modal HTML -->
-<div id="editEmployeeModal${b.getBookId()}" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form>
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Employee</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" name = "" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Address</label>
-                        <textarea class="form-control" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-info" value="Save">
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- Delete Modal HTML -->
 <div id="deleteEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form>
+            <form action="CrudBookActionServlet" method="post">
                 <div class="modal-header">
-                    <h4 class="modal-title">Delete Employee</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Delete Book</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete these Records?</p>
+                    <p>Are you sure you want to delete these list Books?</p>
                     <p class="text-warning"><small>This action cannot be undone.</small></p>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <input type="submit" class="btn btn-danger" value="Delete">
+                    <input type="button" class="btn btn-default" data-dismiss="modal"
+                           value="Cancel">
+                    <button type="submit" name="btnDeleteListBook"
+                            class="btn btn-danger" value="deleteListBook">Delete</button>
                 </div>
             </form>
         </div>

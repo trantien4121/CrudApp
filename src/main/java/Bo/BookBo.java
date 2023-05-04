@@ -13,4 +13,20 @@ public class BookBo {
         dsBook = bDao.getBook();
         return dsBook;
     }
+
+    public BookBean getBook(String bookId){
+        BookBean b = new BookBean();
+        dsBook = bDao.getBook();
+        for(BookBean i : dsBook){
+            if (i.getBookId().equals(bookId))
+                b = i;
+        }
+        return b;
+    }
+
+//    public static void main(String[] args) {
+//        BookBo b = new BookBo();
+//        BookBean bGet = b.getBook("bkt03");
+//        System.out.println(bGet.getBookName());
+//    }
 }

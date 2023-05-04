@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class BookDao {
-    public static ArrayList<BookBean> getBook(){
+    public static ArrayList<BookBean> getBook() {
         ArrayList<BookBean> dsBook = new ArrayList<BookBean>();
         try {
 
@@ -22,7 +22,7 @@ public class BookDao {
             ResultSet rs = cmd.executeQuery();
 
             //step3: save data to dsBook
-            while(rs.next()){
+            while (rs.next()) {
 
                 String bookId = rs.getString("bookId");
                 String bookName = rs.getString("bookName");
@@ -41,24 +41,23 @@ public class BookDao {
 
             return dsBook;
 
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     public static BookBean addBook(String bookId, String bookName, String author, int quantity, int price, String image
-    , String bookType){
+            , String bookType) {
 
         //step1: Connect to database
         ConnectDB cn = new ConnectDB();
         cn.connect();
 
         //step2:
-        if(bookId.equals("")){
+        if (bookId.equals("")) {
             return null;
-        }
-        else{
+        } else {
             String sql = "insert into Book(bookId, bookName, author, quantity, price, image, bookType)\r\n" +
                     "values(?,?,?,?,?,?,?);";
             BookBean insertedBook = null;
@@ -81,16 +80,85 @@ public class BookDao {
         }
     }
 
+    public static BookBean updateBook(String BookId, String bookName, String author, int quantity, int price, String image
+            , String bookType) {
+        //step1: Connect to database
+        ConnectDB cn = new ConnectDB();
+        cn.connect();
+
+        //step2:
+        if (BookId.equals("")) {
+            return null;
+        } else {
+            String sql = "update Book\r\n"
+                    + "set bookName=?, author=?, quantity=?, price=?, image=?, bookType=?\r\n"
+                    + "where bookId=?";
+            BookBean updatedBook = null;
+            try {
+                PreparedStatement ps = cn.conn.prepareStatement(sql);
+                ps.setString(1, bookName);
+                ps.setString(2, author);
+                ps.setInt(3, quantity);
+                ps.setInt(4, price);
+                ps.setString(5, image);
+                ps.setString(6, bookType);
+                ps.setString(7, BookId);
+                updatedBook = new BookBean(BookId, bookName, author, quantity, price, image, bookType);
+
+                ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return updatedBook;
+        }
+    }
+
+    public static boolean deleteBook(String bookId) {
+        //step1: Connect to database
+        ConnectDB cn = new ConnectDB();
+        cn.connect();
+
+        //step2:
+        String sql = "delete from Book where BookId=?";
+        try {
+            PreparedStatement ps = cn.conn.prepareStatement(sql);
+            ps.setString(1, bookId);
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         ArrayList<BookBean> ds = new ArrayList<BookBean>();
         ds = BookDao.getBook();
-        for(BookBean b : ds){
+        for (BookBean b : ds) {
             System.out.println(b.getBookId() + "--" + b.getBookName() + "--" + b.getAuthor() + "--" + b.getQuantity() +
                     "--" + b.getPrice() + "--" + b.getImage() + "--" + b.getBookType());
         }
 
-        BookBean iBook = BookDao.addBook("btk01", "Sách tham khảo", "Trần Tiến", 12,
-                50000, "BookImages/b7.jpg", "TK");
-        System.out.println(iBook.getBookName());
+//        //Test create function
+//        BookBean iBook = BookDao.addBook("bgd02", "SGK Hóa học 12", "Trần Tiến", 12,
+//                70000, "BookImages/b2.jpg", "GD");
+//
+//        System.out.println(iBook.getBookName());
+
+//        //Test delete function
+//        Boolean test = BookDao.deleteBook("btk02");
+//        if(test==true){
+//            System.out.println("delete Book with bookId = btk02 success!");
+//        } else{
+//            System.out.println("delete Book failed");
+//        }
+
+//        //Test update function
+//        BookBean uBook = BookDao.updateBook("bds05","Đời sống hằng ngày update", "Trần B update"
+//        , 22, 22000, "BookImages/b5.jpg", "LP");
+//
+//        System.out.println(uBook.getBookName());
+
+
     }
 }
