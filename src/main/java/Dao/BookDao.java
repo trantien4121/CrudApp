@@ -11,7 +11,6 @@ public class BookDao {
     public static ArrayList<BookBean> getBook() {
         ArrayList<BookBean> dsBook = new ArrayList<BookBean>();
         try {
-
             //step1: connect to database
             ConnectDB cn = new ConnectDB();
             cn.connect();
@@ -131,6 +130,48 @@ public class BookDao {
         return true;
     }
 
+    public static ArrayList<BookBean> getPagination(int pageNo, int pageSize){
+        ArrayList<BookBean> dsBooks = new ArrayList<BookBean>();
+        try{
+            //step 0: set limit, offset
+            int limit = pageSize;
+            int offset = (pageNo - 1) * 5;
+
+            //step1: Connect to database
+            ConnectDB cn = new ConnectDB();
+            cn.connect();
+
+            //step2: get Data from database
+            String sql = "select * from Book limit ? offset ?";
+            PreparedStatement ps = cn.conn.prepareStatement(sql);
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+            ResultSet rs = ps.executeQuery();
+
+            //step3: save Data to dsBooks
+            while(rs.next()){
+                String bookId = rs.getString("bookId");
+                String bookName = rs.getString("bookName");
+                String author = rs.getString("author");
+                int quantity = rs.getInt("quantity");
+                int price = rs.getInt("price");
+                String image = rs.getString("image");
+                String bookType = rs.getString("bookType");
+
+                dsBooks.add(new BookBean(bookId, bookName, author, quantity, price, image, bookType));
+            }
+
+            //step4: close connection and return dsBook
+            rs.close();
+            cn.conn.close();
+
+            return dsBooks;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
     public static void main(String[] args) {
         ArrayList<BookBean> ds = new ArrayList<BookBean>();
         ds = BookDao.getBook();
@@ -158,6 +199,14 @@ public class BookDao {
 //        , 22, 22000, "BookImages/b5.jpg", "LP");
 //
 //        System.out.println(uBook.getBookName());
+
+        //Test getPagination
+//        ArrayList<BookBean> ds2 = new ArrayList<BookBean>();
+//        ds = BookDao.getPagination(1, 5);
+//        for (BookBean b : ds) {
+//            System.out.println(b.getBookId() + "--" + b.getBookName() + "--" + b.getAuthor() + "--" + b.getQuantity() +
+//                    "--" + b.getPrice() + "--" + b.getImage() + "--" + b.getBookType());
+//        }
 
 
     }

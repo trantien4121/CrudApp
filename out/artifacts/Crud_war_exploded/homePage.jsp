@@ -29,7 +29,46 @@
             font-family: 'Varela Round', sans-serif;
             font-size: 13px;
         }
+        .search {
+            width: 100%;
+            position: relative;
+            display: flex;
+        }
 
+        .searchTerm {
+            width: 100%;
+            border: 2px solid #00B4CC;
+            border-right: none;
+            padding: 15px;
+            height: 20px;
+            outline: none;
+            color: gray;
+        }
+
+        .searchTerm:focus{
+            color: gray;
+        }
+
+        .searchButton {
+            width: 40px;
+            height: 34px;
+            border: 1px solid #00B4CC;
+            background: #00B4CC;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /*Resize the wrap to see the search bar change!*/
+        .wrap{
+            margin-left: 14px;
+            width: 30%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
         .table-responsive {
             margin: 100px 0;
 
@@ -179,6 +218,9 @@
             background: #0397d6;
         }
 
+        .pagination li.disabled a:hover {
+            text-decoration: none;
+        }
         .pagination li.disabled i {
             color: #ccc;
         }
@@ -327,14 +369,25 @@
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-3">
                         <h2>CRUD <b>BOOKS</b></h2>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-9">
                         <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i
                                 class="material-icons">&#xE147;</i> <span>Add New Book</span></a>
                         <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i
                                 class="material-icons">&#xE15C;</i> <span>Delete</span></a>
+                        <form action="Home" method="post">
+                            <div class="wrap">
+                                <div class="search">
+                                    <input type="text" class="searchTerm" name="searchValue" value="${value}" placeholder="What are you looking for?">
+
+                                    <button type="submit" class="searchButton" value="search">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -342,10 +395,10 @@
                 <thead>
                 <tr>
                     <th>
-<%--							<span class="custom-checkbox">--%>
-<%--								<input type="checkbox" id="selectAll">--%>
-<%--								<label for="selectAll"></label>--%>
-<%--							</span>--%>
+							<span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
                     </th>
                     <th>ID</th>
                     <th>Name</th>
@@ -481,15 +534,30 @@
                 </tbody>
             </table>
             <div class="clearfix">
-                <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+                <div class="hint-text">Showing <b>${dsBook.size()}</b> out of <b>${totalItems}</b> entries</div>
                 <ul class="pagination">
-                    <li class="page-item disabled"><a href="#">Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next</a></li>
+                    <c:if test="${page != 1}">
+                        <li class="page-item"><a href="Home?page=${page-1}" class="page-link">Previous</a></li>
+                    </c:if>
+                    <c:forEach begin="1" end="${totalPage}" var="i"> <!-- trước là begin 1 end 20 -->
+                        <c:choose>
+                            <c:when test="${page eq i}">
+                                <li class="page-item active"><a href="#" class="page-link">${i}</a></li>
+                            </c:when>
+                            <c:otherwise>
+                                <td>
+                                    <c:if test="${i lt totalPage}"> <!-- Mới thêm -->
+                                        <li class="page-item"><a href="Home?page=${i}" class="page-link">${i}</a></li>
+                                    </c:if>
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+
+                    <c:if test="${page lt totalPage}">
+                        <li class="page-item"><a href="Home?page=${page + 1}" class="page-link">Next</a></li>
+                    </c:if>
+
                 </ul>
             </div>
         </div>

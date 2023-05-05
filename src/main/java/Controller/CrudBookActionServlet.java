@@ -123,33 +123,24 @@ public class CrudBookActionServlet extends HttpServlet {
             BookDao.deleteBook(bookIdDelete);
         }
 
+        //Delete List book checked
         if(request.getParameter("btnDeleteListBook") != null){
             System.out.println("Begin delete list book...");
             if(request.getParameterValues("bookItems") != null){
                 String[] dsDeletedBookId = request.getParameterValues("bookItems");
+
                 for(String dB : dsDeletedBookId){
                     BookDao.deleteBook(dB);
                 }
                 System.out.println("Delete list book success!");
+                for(String b: dsDeletedBookId){
+                    System.out.println(b);
+                }
             }else{
                 System.out.println("Delete list book failed!");
             }
 
         }
-//        //Upadate Book: enctype = "multipart/form-data" -> request.getParameter always return null
-
-        //Delete Book that checked
-//        if(request.getParameterValues("bookItems") != null){
-//            String[] dsDeletedBookId = request.getParameterValues("bookItems"); //getBookId() values
-//            if(request.getParameter("btnDeleteListBook")!=null){
-//                for(String dB: dsDeletedBookId){
-//                    BookDao.deleteBook(dB);
-//                }
-//            }
-//        }else{
-//            System.out.println("Delete list book failed! cause by: request.getParameterValues() is NULL");
-//        }
-
 
         response.sendRedirect("Home");
 

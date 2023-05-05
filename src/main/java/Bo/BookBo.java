@@ -14,6 +14,22 @@ public class BookBo {
         return dsBook;
     }
 
+    public ArrayList<BookBean> getBookPagination(int pageNo, int PageSize){
+        dsBook = bDao.getPagination(pageNo, PageSize);
+        return dsBook;
+    }
+
+    public ArrayList<BookBean> searchBook(String val){
+        ArrayList<BookBean> dsSearch = new ArrayList<BookBean>();
+        for(BookBean b: dsBook){
+            if(b.getBookName().toLowerCase().contains(val.toLowerCase()) ||
+            b.getAuthor().toLowerCase().contains(val.toLowerCase())){
+                dsSearch.add(b);
+            }
+        }
+        return dsSearch;
+    }
+
     public BookBean getBook(String bookId){
         BookBean b = new BookBean();
         dsBook = bDao.getBook();
