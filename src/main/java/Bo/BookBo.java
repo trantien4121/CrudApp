@@ -21,6 +21,7 @@ public class BookBo {
 
     public ArrayList<BookBean> searchBook(String val){
         ArrayList<BookBean> dsSearch = new ArrayList<BookBean>();
+        dsBook = bDao.getBook();
         for(BookBean b: dsBook){
             if(b.getBookName().toLowerCase().contains(val.toLowerCase()) ||
             b.getAuthor().toLowerCase().contains(val.toLowerCase())){
@@ -28,6 +29,33 @@ public class BookBo {
             }
         }
         return dsSearch;
+    }
+
+    public ArrayList<BookBean> filterBook(String bookType){
+        ArrayList<BookBean> dsFilter = new ArrayList<BookBean>();
+        dsBook = bDao.getBook();
+        for(BookBean b : dsBook){
+            if(b.getBookType().equals(bookType))
+                dsFilter.add(b);
+        }
+        return dsFilter;
+    }
+
+    public ArrayList<BookBean> filterAndSearch(String bookType, String val){
+        ArrayList<BookBean> dsFilterSearch = new ArrayList<BookBean>();
+        dsBook = bDao.getBook();
+
+        for(BookBean b: dsBook){
+            if(bookType.equals("")){
+                dsFilterSearch = searchBook(val);
+            }else{
+                if(b.getBookType().equals(bookType) && (b.getBookName().toLowerCase().contains(val.toLowerCase()) ||
+                        b.getAuthor().toLowerCase().contains(val.toLowerCase()))){
+                    dsFilterSearch.add(b);
+                }
+            }
+        }
+        return dsFilterSearch;
     }
 
     public BookBean getBook(String bookId){

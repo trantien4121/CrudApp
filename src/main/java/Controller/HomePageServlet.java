@@ -35,7 +35,7 @@ public class HomePageServlet extends HttpServlet {
         ArrayList<BookBean> dsBook = bBo.getDsBook();
 
 
-        request.setAttribute("dsBook", dsBook);
+        //request.setAttribute("dsBook", dsBook);
         request.setAttribute("dsBookType", dsBookType);
 
         //Pagination
@@ -45,27 +45,68 @@ public class HomePageServlet extends HttpServlet {
 
         request.setAttribute("totalItems", totalItems);
 
-        if(request.getParameter("searchValue")!=null){
+        //Lần hiển hị đầu tiên, chưa set page và searchValue (-> set curPage =1)
+        if(request.getParameter("page")==null && request.getParameter("searchValue")==null){
             curPage = 1;
-            dsBook = bBo.getDsBook();
         }
-        if(request.getParameter("page")==null){
-            curPage = 1;
-        }else{
+
+        //Nếu tìm được page trên url, set curPage = page đó
+        if(request.getParameter("page")!=null){
             curPage = Integer.parseInt(request.getParameter("page"));
         }
+
+        //set dsBook là hiển thị phân trang với curPage truyền vào
         dsBook = bBo.getBookPagination(curPage, 5);
 
+        //set curPage và totalPage
         request.setAttribute("page", curPage);
         request.setAttribute("totalPage", totalPage);
 
 
-        //Search by bookName of Author
+//        //Search by bookName of Author
+//        String key = request.getParameter("searchValue");
+//        if (key != null) {
+//
+//            //Nếu key khác "" -> search theo key
+//            if(!key.equals("")){
+//                request.setAttribute("value", key);
+//                dsBook = bBo.searchBook(key);
+//            }
+//            else dsBook = bBo.getBookPagination(curPage, 5);
+//        }
+//
+//        request.setAttribute("dsBook", dsBook);
+//
+//        //Filter by bookType
+//        String filterVal = request.getParameter("BookTypesFilter");
+//        if(filterVal != null){
+//            if(!filterVal.equals("")){
+//                request.setAttribute("filterValue", filterVal);
+//                dsBook = bBo.filterBook(filterVal);
+//            }
+//            else dsBook = bBo.getBookPagination(curPage, 5);
+//        }
+//
+//        request.setAttribute("dsBook", dsBook);
+
         String key = request.getParameter("searchValue");
-        if (key != null) {
-            request.setAttribute("value", key);
-            dsBook = bBo.searchBook(key);
+        String filterVal = request.getParameter("BookTypesFilter");
+
+        if(key!= null || filterVal!=null) {
+            request.setAttribute("filterValue", filterVal);
+
+            if (!key.equals("")) {
+                request.setAttribute("value", key);
+                dsBook = bBo.filterAndSearch(filterVal, key);
+            }
+            else if(!filterVal.equals("")){
+                dsBook = bBo.filterBook(filterVal);
+            }
+            else {
+                dsBook = bBo.getBookPagination(curPage, 5);
+            }
         }
+
         request.setAttribute("dsBook", dsBook);
 
         RequestDispatcher rd = request.getRequestDispatcher("homePage.jsp");

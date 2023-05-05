@@ -69,11 +69,35 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        .filter-box{
+            margin-left: 25px;
+            width: 15%;
+            position: absolute;
+            top: 50%;
+            left: 23%;
+            transform: translate(-50%, -50%);
+        }
+        .filter-box>select{
+            padding: 6px 0 6px 10px;
+            border: 2px solid #00B4CC;
+            color: gray;
+        }
+        .filter-box>select:focus{
+            outline: none;
+        }
         .table-responsive {
             margin: 100px 0;
 
         }
-
+        .Filter-title{
+            margin-left: 20px;
+            width: 10%;
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+        }
         .table-wrapper {
             background: #fff;
             padding: 20px 25px;
@@ -387,6 +411,23 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <div class="form-group filter-box">
+                                <select id="bookTypesFilter" name="BookTypesFilter">
+                                    <option value="">All</option>
+                                    <c:forEach var="bT" items="${dsBookType}">
+                                        <c:if test="${filterValue eq bT.getBookType()}">
+                                            <option value="${filterValue}" selected>${bT.getBookTypeName()}</option>
+                                        </c:if>
+                                        <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                                    </c:forEach>
+
+                                </select>
+                            </div>
+
+                            <div class="Filter-title">
+                                <span>Loại sách:</span>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -480,6 +521,16 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group">
+                                                <select id="bookTypesUpdate" class="form-control" name="txtBookType">
+                                                    <c:forEach var="bT" items="${dsBookType}">
+                                                        <c:if test="${b.getBookType() eq bT.getBookType()}">
+                                                            <option value="${bT.getBookType()}" selected>${bT.getBookTypeName()}</option>
+                                                        </c:if>
+                                                        <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="bookIdUpdate">BookId</label>
                                                 <input type="text" class="form-control" name="txtBookId" id="bookIdUpdate"
                                                        value="${b.getBookId()}" readonly>
@@ -512,11 +563,11 @@
                                                 <input type="file" class="form-control" id="imageUpdate" name="txtImage"
                                                        value="${b.getImage()}">
                                             </div>
-                                            <div class="form-group">
-                                                <label for="bookTypeUpdate">bookType</label>
-                                                <input type="text" class="form-control" id="bookTypeUpdate" name="txtBookType"
-                                                       value="${b.getBookType()}">
-                                            </div>
+<%--                                            <div class="form-group">--%>
+<%--                                                <label for="bookTypeUpdate">bookType</label>--%>
+<%--                                                <input type="text" class="form-control" id="bookTypeUpdate" name="txtBookType"--%>
+<%--                                                       value="${b.getBookType()}">--%>
+<%--                                            </div>--%>
                                         </div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
@@ -573,6 +624,14 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
+                    <label for="bookTypes">BookTypes</label>
+                    <div class="form-group">
+                        <select id="bookTypes" class="form-control" name="txtBookType">
+                            <c:forEach var="bT" items="${dsBookType}">
+                                <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="bookId">BookId</label>
                         <input type="text" class="form-control" name="txtBookId" id="bookId" required>
@@ -597,10 +656,10 @@
                         <label for="image">Image</label>
                         <input type="file" class="form-control" id="image" name="txtImage" required>
                     </div>
-                    <div class="form-group">
-                        <label for="bookType">bookType</label>
-                        <input type="text" class="form-control" id="bookType" name="txtBookType" required>
-                    </div>
+<%--                    <div class="form-group">--%>
+<%--                        <label for="bookType">bookType</label>--%>
+<%--                        <input type="text" class="form-control" id="bookType" name="txtBookType" required>--%>
+<%--                    </div>--%>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
