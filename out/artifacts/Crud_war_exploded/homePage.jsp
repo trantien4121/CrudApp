@@ -399,7 +399,7 @@
                     <div class="col-sm-9">
                         <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i
                                 class="material-icons">&#xE147;</i> <span>Add New Book</span></a>
-                        <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i
+                        <a href="#deleteListBookModal" class="btn btn-danger" data-toggle="modal"><i
                                 class="material-icons">&#xE15C;</i> <span>Delete</span></a>
                         <form action="Home" method="post">
                             <div class="wrap">
@@ -464,13 +464,13 @@
                         </td>
                         <td>${b.getBookId()}</td>
                         <td>${b.getBookName()}</td>
-                        <th>${b.getAuthor()}</th>
-                        <th>${b.getQuantity()}</th>
-                        <th>${b.getPrice()}</th>
-                        <th>
+                        <td>${b.getAuthor()}</td>
+                        <td>${b.getQuantity()}</td>
+                        <td>${b.getPrice()}</td>
+                        <td>
                             <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
-                        </th>
-                        <th>${b.getBookType()}</th>
+                        </td>
+                        <td>${b.getBookType()}</td>
 
                         <td>
                             <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i
@@ -508,6 +508,32 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!--Modal Delete list book-->
+                            <div id="deleteListBookModal" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+<%--                                        <form action="CrudBookActionServlet" method="post">--%>
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Delete Book</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to delete these list Books?</p>
+                                                <p class="text-warning"><small>This action cannot be undone.</small></p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <input type="button" class="btn btn-default" data-dismiss="modal"
+                                                       value="Cancel">
+                                                <button type="submit" name="btnDeleteListBook"
+                                                        class="btn btn-danger" value="deleteListBook">Delete</button>
+                                            </div>
+<%--                                        </form>--%>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
 
                         <!--Modal Update Book-->
@@ -670,29 +696,29 @@
         </div>
     </div>
 </div>
-<div id="deleteEmployeeModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="CrudBookActionServlet" method="post">
-                <div class="modal-header">
-                    <h4 class="modal-title">Delete Book</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        &times;
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete these list Books?</p>
-                    <p class="text-warning"><small>This action cannot be undone.</small></p>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal"
-                           value="Cancel">
-                    <button type="submit" name="btnDeleteListBook"
-                            class="btn btn-danger" value="deleteListBook">Delete</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+<%--<div id="deleteListBookModal" class="modal fade">--%>
+<%--    <div class="modal-dialog">--%>
+<%--        <div class="modal-content">--%>
+<%--            <form action="CrudBookActionServlet" method="post">--%>
+<%--                <div class="modal-header">--%>
+<%--                    <h4 class="modal-title">Delete Book</h4>--%>
+<%--                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">--%>
+<%--                        &times;--%>
+<%--                    </button>--%>
+<%--                </div>--%>
+<%--                <div class="modal-body">--%>
+<%--                    <p>Are you sure you want to delete these list Books?</p>--%>
+<%--                    <p class="text-warning"><small>This action cannot be undone.</small></p>--%>
+<%--                </div>--%>
+<%--                <div class="modal-footer">--%>
+<%--                    <input type="button" class="btn btn-default" data-dismiss="modal"--%>
+<%--                           value="Cancel">--%>
+<%--                    <button type="submit" name="btnDeleteListBook"--%>
+<%--                            class="btn btn-danger" value="deleteListBook">Delete</button>--%>
+<%--                </div>--%>
+<%--            </form>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--</div>--%>
 </body>
 </html>

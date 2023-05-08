@@ -63,35 +63,10 @@ public class HomePageServlet extends HttpServlet {
         request.setAttribute("totalPage", totalPage);
 
 
-//        //Search by bookName of Author
-//        String key = request.getParameter("searchValue");
-//        if (key != null) {
-//
-//            //Nếu key khác "" -> search theo key
-//            if(!key.equals("")){
-//                request.setAttribute("value", key);
-//                dsBook = bBo.searchBook(key);
-//            }
-//            else dsBook = bBo.getBookPagination(curPage, 5);
-//        }
-//
-//        request.setAttribute("dsBook", dsBook);
-//
-//        //Filter by bookType
-//        String filterVal = request.getParameter("BookTypesFilter");
-//        if(filterVal != null){
-//            if(!filterVal.equals("")){
-//                request.setAttribute("filterValue", filterVal);
-//                dsBook = bBo.filterBook(filterVal);
-//            }
-//            else dsBook = bBo.getBookPagination(curPage, 5);
-//        }
-//
-//        request.setAttribute("dsBook", dsBook);
-
         String key = request.getParameter("searchValue");
         String filterVal = request.getParameter("BookTypesFilter");
 
+        //Filter and search
         if(key!= null || filterVal!=null) {
             request.setAttribute("filterValue", filterVal);
 
@@ -109,7 +84,7 @@ public class HomePageServlet extends HttpServlet {
 
         request.setAttribute("dsBook", dsBook);
 
-        RequestDispatcher rd = request.getRequestDispatcher("homePage.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("homePage2.jsp");
         rd.forward(request, response);
     }
 
