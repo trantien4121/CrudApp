@@ -84,7 +84,7 @@ public class HomePageServlet extends HttpServlet {
 
         request.setAttribute("dsBook", dsBook);
 
-        RequestDispatcher rd = request.getRequestDispatcher("homePage2.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("homePage.jsp");
         rd.forward(request, response);
     }
 

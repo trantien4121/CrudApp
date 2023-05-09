@@ -416,10 +416,16 @@
                                 <select id="bookTypesFilter" name="BookTypesFilter">
                                     <option value="">All</option>
                                     <c:forEach var="bT" items="${dsBookType}">
-                                        <c:if test="${filterValue eq bT.getBookType()}">
-                                            <option value="${filterValue}" selected>${bT.getBookTypeName()}</option>
-                                        </c:if>
-                                        <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+
+                                        <c:choose>
+                                            <c:when test="${filterValue eq bT.getBookType()}">
+                                                <option value="${filterValue}" selected>${bT.getBookTypeName()}</option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                                            </c:otherwise>
+                                        </c:choose>
+
                                     </c:forEach>
 
                                 </select>
@@ -452,42 +458,40 @@
                 </tr>
                 </thead>
                 <tbody>
-
+                <form action="CrudBookActionServlet" method="post">
                 <c:forEach var="b" items="${dsBook}">
                     <tr>
-                        <form action="CrudBookActionServlet" method="post">
-                        <td>
+                            <td>
                             <span class="custom-checkbox">
                                 <input type="checkbox" name="bookItems" id="checkbox${b.getBookId()}" value="${b.getBookId()}">
                                 <label for="checkbox${b.getBookId()}"></label>
                             </span>
-                        </td>
-                        <td>${b.getBookId()}</td>
-                        <td>${b.getBookName()}</td>
-                        <td>${b.getAuthor()}</td>
-                        <td>${b.getQuantity()}</td>
-                        <td>${b.getPrice()}</td>
-                        <td>
-                            <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
-                        </td>
-                        <td>${b.getBookType()}</td>
+                            </td>
+                            <td>${b.getBookId()}</td>
+                            <td>${b.getBookName()}</td>
+                            <td>${b.getAuthor()}</td>
+                            <td>${b.getQuantity()}</td>
+                            <td>${b.getPrice()}</td>
+                            <td>
+                                <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
+                            </td>
+                            <td>${b.getBookType()}</td>
 
-                        <td>
-                            <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i
-                                    class="material-icons"
-                                    data-toggle="tooltip"
-                                    title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal${b.getBookId()}" class="delete" data-toggle="modal"><i
-                                    class="material-icons"
-                                    data-toggle="tooltip"
-                                    title="Delete">&#xE872;</i></a>
-                        </td>
+                            <td>
+                                <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i
+                                        class="material-icons"
+                                        data-toggle="tooltip"
+                                        title="Edit">&#xE254;</i></a>
+                                <a href="#deleteEmployeeModal${b.getBookId()}" class="delete" data-toggle="modal"><i
+                                        class="material-icons"
+                                        data-toggle="tooltip"
+                                        title="Delete">&#xE872;</i></a>
+                            </td>
 
-                        <!--Modal Delete 1 Book-->
-                        <div id="deleteEmployeeModal${b.getBookId()}" class="modal fade">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-<%--                                    <form action="CrudBookActionServlet" method="post">--%>
+                            <!--Modal Delete 1 Book-->
+                            <div id="deleteEmployeeModal${b.getBookId()}" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title">Delete Book</h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -502,112 +506,103 @@
                                             <input type="button" class="btn btn-default" data-dismiss="modal"
                                                    value="Cancel">
                                             <button type="submit" name="btnDeleteBook"
-                                            class="btn btn-danger" value="${b.getBookId()}">Delete</button>
+                                                    class="btn btn-danger" value="${b.getBookId()}">Delete</button>
                                         </div>
-<%--                                    </form>--%>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--Modal Delete list book-->
-                            <div id="deleteListBookModal" class="modal fade">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-<%--                                        <form action="CrudBookActionServlet" method="post">--%>
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Delete Book</h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                                    &times;
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Are you sure you want to delete these list Books?</p>
-                                                <p class="text-warning"><small>This action cannot be undone.</small></p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <input type="button" class="btn btn-default" data-dismiss="modal"
-                                                       value="Cancel">
-                                                <button type="submit" name="btnDeleteListBook"
-                                                        class="btn btn-danger" value="deleteListBook">Delete</button>
-                                            </div>
-<%--                                        </form>--%>
                                     </div>
                                 </div>
                             </div>
-                        </form>
 
-                        <!--Modal Update Book-->
-                        <div id="editEmployeeModal${b.getBookId()}" class="modal fade">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form action="UpdateBookActionServlet" method="post" enctype="multipart/form-data">
+                            <!--Modal Delete list book-->
+                            <div id="deleteListBookModal" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title">Update Book</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title">Delete Book</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                                &times;
+                                            </button>
                                         </div>
                                         <div class="modal-body">
-                                            <div class="form-group">
-                                                <select id="bookTypesUpdate" class="form-control" name="txtBookType">
-                                                    <c:forEach var="bT" items="${dsBookType}">
-                                                        <c:if test="${b.getBookType() eq bT.getBookType()}">
-                                                            <option value="${bT.getBookType()}" selected>${bT.getBookTypeName()}</option>
-                                                        </c:if>
-                                                        <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="bookIdUpdate">BookId</label>
-                                                <input type="text" class="form-control" name="txtBookId" id="bookIdUpdate"
-                                                       value="${b.getBookId()}" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="bookNameUpdate">BookName</label>
-                                                <input type="text" class="form-control" id="bookNameUpdate" name="txtBookName"
-                                                       value="${b.getBookName()}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="authorUpdate">Author</label>
-                                                <input type="text" class="form-control" id="authorUpdate" name="txtAuthor"
-                                                       value="${b.getAuthor()}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="quantityUpdate">Quantity</label>
-                                                <input type="number" class="form-control" id="quantityUpdate" name="txtQuantity"
-                                                       value="${b.getQuantity()}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="priceUpdate">Price</label>
-                                                <input type="number" class="form-control" id="priceUpdate" name="txtPrice"
-                                                       value="${b.getPrice()}">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="imageUpdate">Image</label>
-                                                <br>
-                                                <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
-
-                                                <input type="file" class="form-control" id="imageUpdate" name="txtImage"
-                                                       value="${b.getImage()}">
-                                            </div>
-<%--                                            <div class="form-group">--%>
-<%--                                                <label for="bookTypeUpdate">bookType</label>--%>
-<%--                                                <input type="text" class="form-control" id="bookTypeUpdate" name="txtBookType"--%>
-<%--                                                       value="${b.getBookType()}">--%>
-<%--                                            </div>--%>
+                                            <p>Are you sure you want to delete these list Books?</p>
+                                            <p class="text-warning"><small>This action cannot be undone.</small></p>
                                         </div>
                                         <div class="modal-footer">
-                                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-<%--                                            <input type="text" class="btn btn-success" name="btnUpdateBook" value="Add">--%>
-                                            <button type="submit" name="btnUpdateBook" class="btn btn-success" value="${b.getBookId()}">Update</button>
+                                            <input type="button" class="btn btn-default" data-dismiss="modal"
+                                                   value="Cancel">
+                                            <button type="submit" name="btnDeleteListBook"
+                                                    class="btn btn-danger" value="deleteListBook">Delete</button>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                     </tr>
 
                 </c:forEach>
+                </form>
+                <c:forEach var="b" items="${dsBook}">
+                    <!--Modal Update Book-->
+                    <div id="editEmployeeModal${b.getBookId()}" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="UpdateBookActionServlet" method="post" enctype="multipart/form-data">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Update Book</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <select id="bookTypesUpdate" class="form-control" name="txtBookType">
+                                                <c:forEach var="bT" items="${dsBookType}">
+                                                    <c:if test="${b.getBookType() eq bT.getBookType()}">
+                                                        <option value="${bT.getBookType()}" selected>${bT.getBookTypeName()}</option>
+                                                    </c:if>
+                                                    <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bookIdUpdate">BookId</label>
+                                            <input type="text" class="form-control" name="txtBookId" id="bookIdUpdate"
+                                                   value="${b.getBookId()}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bookNameUpdate">BookName</label>
+                                            <input type="text" class="form-control" id="bookNameUpdate" name="txtBookName"
+                                                   value="${b.getBookName()}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="authorUpdate">Author</label>
+                                            <input type="text" class="form-control" id="authorUpdate" name="txtAuthor"
+                                                   value="${b.getAuthor()}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="quantityUpdate">Quantity</label>
+                                            <input type="number" class="form-control" id="quantityUpdate" name="txtQuantity"
+                                                   value="${b.getQuantity()}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="priceUpdate">Price</label>
+                                            <input type="number" class="form-control" id="priceUpdate" name="txtPrice"
+                                                   value="${b.getPrice()}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="imageUpdate">Image</label>
+                                            <br>
+                                            <img src="${b.getImage()}" alt="Girl in a jacket" width="40" height="40">
 
+                                            <input type="file" class="form-control" id="imageUpdate" name="txtImage"
+                                                   value="${b.getImage()}">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                                        <button type="submit" name="btnUpdateBook" class="btn btn-success" value="${b.getBookId()}">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
                 </tbody>
             </table>
             <div class="clearfix">
@@ -640,7 +635,7 @@
         </div>
     </div>
 </div>
-<!-- Edit Modal HTML -->
+<!-- Modal Add Book -->
 <div id="addEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -682,43 +677,14 @@
                         <label for="image">Image</label>
                         <input type="file" class="form-control" id="image" name="txtImage" required>
                     </div>
-<%--                    <div class="form-group">--%>
-<%--                        <label for="bookType">bookType</label>--%>
-<%--                        <input type="text" class="form-control" id="bookType" name="txtBookType" required>--%>
-<%--                    </div>--%>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-<%--                    <input type="submit" class="btn btn-success" name="btnAddBook" value="Add">--%>
                     <button type="submit" class="btn btn-success" name="btnAddBook" value="Add">Add</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<%--<div id="deleteListBookModal" class="modal fade">--%>
-<%--    <div class="modal-dialog">--%>
-<%--        <div class="modal-content">--%>
-<%--            <form action="CrudBookActionServlet" method="post">--%>
-<%--                <div class="modal-header">--%>
-<%--                    <h4 class="modal-title">Delete Book</h4>--%>
-<%--                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">--%>
-<%--                        &times;--%>
-<%--                    </button>--%>
-<%--                </div>--%>
-<%--                <div class="modal-body">--%>
-<%--                    <p>Are you sure you want to delete these list Books?</p>--%>
-<%--                    <p class="text-warning"><small>This action cannot be undone.</small></p>--%>
-<%--                </div>--%>
-<%--                <div class="modal-footer">--%>
-<%--                    <input type="button" class="btn btn-default" data-dismiss="modal"--%>
-<%--                           value="Cancel">--%>
-<%--                    <button type="submit" name="btnDeleteListBook"--%>
-<%--                            class="btn btn-danger" value="deleteListBook">Delete</button>--%>
-<%--                </div>--%>
-<%--            </form>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</div>--%>
 </body>
 </html>
