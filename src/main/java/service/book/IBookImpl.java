@@ -201,6 +201,17 @@ public class IBookImpl implements IBook {
             return null;
         }
     }
+    public ArrayList<Book> getListBooksPagination(int pageNo, int pageSize, ArrayList<Book> dsBooks){
+        ArrayList<Book> pageData = new ArrayList<Book>();
+
+        int totalPages = (int) Math.ceil((double) dsBooks.size() / pageSize);
+        int startIndex = (pageNo - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, dsBooks.size());
+        if (startIndex < dsBooks.size()) {
+            pageData = new ArrayList<Book>(dsBooks.subList(startIndex, endIndex));
+        }
+        return pageData;
+    }
     public ArrayList<Book> searchBook(String key){
         ArrayList<Book> dsBookSearch = new ArrayList<Book>();
         IBook bookImpl = new IBookImpl();

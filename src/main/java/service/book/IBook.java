@@ -20,6 +20,8 @@ public interface IBook {
 
     public ArrayList<Book> getAllBooksPagination(int pageNo, int pageSize);
 
+    public ArrayList<Book> getListBooksPagination(int pageNo, int pageSize, ArrayList<Book> dsBooks);
+
     public ArrayList<Book> searchBook(String key);
 
     public ArrayList<Book> filterBook(String filterVal);

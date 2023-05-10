@@ -609,8 +609,23 @@
         <div class="hint-text">Showing <b>${dsBook.size()}</b> out of <b>${totalItems}</b> entries</div>
         <ul class="pagination">
           <c:if test="${page != 1}">
-            <li class="page-item"><a href="home?page=${page-1}" class="page-link">Previous</a></li>
+<%--            <li class="page-item"><a href="home?page=${page-1}" class="page-link">Previous</a></li>--%>
+
+            <c:choose>
+              <c:when test="${not empty value or not empty filterValue}">
+                <!--Nếu chuyển trang mà đã có search hoặc filter, lấy các giá trị search(value) và filter(filter value) để lưu vào section-->
+                <li class="page-item"><a href="home?action=SearchAndFilter&page=${page-1}" class="page-link">Previous</a></li>
+                <c:set var = "searchValueSession" scope = "session" value="${value}" />
+                <c:set var = "filterValueSession" scope = "session" value="${filterValue}" />
+              </c:when>
+              <c:otherwise>
+                <!--Nếu chuyển trang mà trước đó chưa search hoặc filter(chưa có value và filterValue) để lưu vào session-->
+                <li class="page-item"><a href="home?page=${page-1}" class="page-link">Previous</a></li>
+              </c:otherwise>
+            </c:choose>
+
           </c:if>
+
           <c:forEach begin="1" end="${totalPage}" var="i"> <!-- trước là begin 1 end 20 -->
             <c:choose>
               <c:when test="${page eq i}">
@@ -619,7 +634,20 @@
               <c:otherwise>
                 <td>
                   <c:if test="${i lt totalPage}"> <!-- Mới thêm -->
-                    <li class="page-item"><a href="home?page=${i}" class="page-link">${i}</a></li>
+<%--                    <li class="page-item"><a href="home?page=${i}" class="page-link">${i}</a></li>--%>
+                    <c:choose>
+                      <c:when test="${not empty value or not empty filterValue}">
+                        <!--Nếu chuyển trang mà đã có search hoặc filter, lấy các giá trị search(value) và filter(filter value) để lưu vào section-->
+                        <li class="page-item"><a href="home?action=SearchAndFilter&page=${i}" class="page-link">${i}</a></li>
+                        <c:set var = "searchValueSession" scope = "session" value="${value}" />
+                        <c:set var = "filterValueSession" scope = "session" value="${filterValue}" />
+                      </c:when>
+                      <c:otherwise>
+                        <!--Nếu chuyển trang mà trước đó chưa search hoặc filter(chưa có value và filterValue) để lưu vào session-->
+                        <li class="page-item"><a href="home?page=${i}" class="page-link">${i}</a></li>
+                      </c:otherwise>
+                    </c:choose>
+
                   </c:if>
                 </td>
               </c:otherwise>
@@ -627,7 +655,20 @@
           </c:forEach>
 
           <c:if test="${page lt totalPage}">
-            <li class="page-item"><a href="home?page=${page + 1}" class="page-link">Next</a></li>
+<%--            <li class="page-item"><a href="home?page=${page + 1}" class="page-link">Next</a></li>--%>
+            <c:choose>
+              <c:when test="${not empty value or not empty filterValue}">
+                <!--Nếu chuyển trang mà đã có search hoặc filter, lấy các giá trị search(value) và filter(filter value) để lưu vào section-->
+                <li class="page-item"><a href="home?action=SearchAndFilter&page=${page + 1}" class="page-link">Next</a></li>
+                <c:set var = "searchValueSession" scope = "session" value="${value}" />
+                <c:set var = "filterValueSession" scope = "session" value="${filterValue}" />
+              </c:when>
+              <c:otherwise>
+                <!--Nếu chuyển trang mà trước đó chưa search hoặc filter(chưa có value và filterValue) để lưu vào session-->
+                <li class="page-item"><a href="home?page=${page + 1}" class="page-link">Next</a></li>
+              </c:otherwise>
+            </c:choose>
+
           </c:if>
 
         </ul>
