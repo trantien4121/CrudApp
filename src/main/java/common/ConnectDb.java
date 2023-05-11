@@ -7,9 +7,10 @@ import java.sql.SQLException;
 public class ConnectDb {
 
     public static Connection conn;
-    static String url = "jdbc:mysql://localhost:3306/crudbook";
-    static String user = "root";
-    static String password = "123456";
+
+    static String url = (String) ReadPropertiesLibrary.readFileProperties().get("url");
+    static String user = (String) ReadPropertiesLibrary.readFileProperties().get("user");
+    static String password = (String) ReadPropertiesLibrary.readFileProperties().get("password");
 
     public static Connection connect(){
         try {
@@ -30,8 +31,4 @@ public class ConnectDb {
         return null;
     }
 
-//    public static void main(String[] args) {
-//        ConnectDb cn = new ConnectDb();
-//        cn.connect();
-//    }
 }

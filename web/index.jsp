@@ -1,6 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="Bean.BookBean" %>
 <%--
   Created by IntelliJ IDEA.
   User: tien.tran2
@@ -442,10 +441,10 @@
         <thead>
         <tr>
           <th>
-							<span class="custom-checkbox">
-								<input type="checkbox" id="selectAll">
-								<label for="selectAll"></label>
-							</span>
+            <span class="custom-checkbox">
+              <input type="checkbox" id="selectAll">
+              <label for="selectAll"></label>
+            </span>
           </th>
           <th>ID</th>
           <th>Name</th>
@@ -458,14 +457,14 @@
         </tr>
         </thead>
         <tbody>
-        <form action="CrudBookActionServlet" method="post">
+        <form action="CrudBook" method="post">
           <c:forEach var="b" items="${dsBook}">
             <tr>
               <td>
-                            <span class="custom-checkbox">
-                                <input type="checkbox" name="bookItems" id="checkbox${b.getBookId()}" value="${b.getBookId()}">
-                                <label for="checkbox${b.getBookId()}"></label>
-                            </span>
+                <span class="custom-checkbox">
+                  <input type="checkbox" name="bookItems" id="checkbox${b.getBookId()}" value="${b.getBookId()}">
+                  <label for="checkbox${b.getBookId()}"></label>
+                </span>
               </td>
               <td>${b.getBookId()}</td>
               <td>${b.getBookName()}</td>
@@ -505,7 +504,7 @@
                     <div class="modal-footer">
                       <input type="button" class="btn btn-default" data-dismiss="modal"
                              value="Cancel">
-                      <button type="submit" name="btnDeleteBook"
+                      <button type="submit" name="btnActionDelete"
                               class="btn btn-danger" value="${b.getBookId()}">Delete</button>
                     </div>
                   </div>
@@ -529,7 +528,7 @@
                     <div class="modal-footer">
                       <input type="button" class="btn btn-default" data-dismiss="modal"
                              value="Cancel">
-                      <button type="submit" name="btnDeleteListBook"
+                      <button type="submit" name="btnActionDelete"
                               class="btn btn-danger" value="deleteListBook">Delete</button>
                     </div>
                   </div>
@@ -544,7 +543,7 @@
           <div id="editEmployeeModal${b.getBookId()}" class="modal fade">
             <div class="modal-dialog">
               <div class="modal-content">
-                <form action="UpdateBookActionServlet" method="post" enctype="multipart/form-data">
+                <form action="CrudBook" method="post" enctype="multipart/form-data">
                   <div class="modal-header">
                     <h4 class="modal-title">Update Book</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -596,7 +595,7 @@
                   </div>
                   <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                    <button type="submit" name="btnUpdateBook" class="btn btn-success" value="${b.getBookId()}">Update</button>
+                    <button type="submit" name="btnAction" class="btn btn-success" value="Update">Update</button>
                   </div>
                 </form>
               </div>
@@ -609,8 +608,6 @@
         <div class="hint-text">Showing <b>${dsBook.size()}</b> out of <b>${totalItems}</b> entries</div>
         <ul class="pagination">
           <c:if test="${page != 1}">
-<%--            <li class="page-item"><a href="home?page=${page-1}" class="page-link">Previous</a></li>--%>
-
             <c:choose>
               <c:when test="${not empty value or not empty filterValue}">
                 <!--Nếu chuyển trang mà đã có search hoặc filter, lấy các giá trị search(value) và filter(filter value) để lưu vào section-->
@@ -626,15 +623,14 @@
 
           </c:if>
 
-          <c:forEach begin="1" end="${totalPage}" var="i"> <!-- trước là begin 1 end 20 -->
+          <c:forEach begin="1" end="${totalPage}" var="i">
             <c:choose>
               <c:when test="${page eq i}">
                 <li class="page-item active"><a href="#" class="page-link">${i}</a></li>
               </c:when>
               <c:otherwise>
                 <td>
-                  <c:if test="${i lt totalPage}"> <!-- Mới thêm -->
-<%--                    <li class="page-item"><a href="home?page=${i}" class="page-link">${i}</a></li>--%>
+                  <c:if test="${i lt totalPage}">
                     <c:choose>
                       <c:when test="${not empty value or not empty filterValue}">
                         <!--Nếu chuyển trang mà đã có search hoặc filter, lấy các giá trị search(value) và filter(filter value) để lưu vào section-->
@@ -655,7 +651,6 @@
           </c:forEach>
 
           <c:if test="${page lt totalPage}">
-<%--            <li class="page-item"><a href="home?page=${page + 1}" class="page-link">Next</a></li>--%>
             <c:choose>
               <c:when test="${not empty value or not empty filterValue}">
                 <!--Nếu chuyển trang mà đã có search hoặc filter, lấy các giá trị search(value) và filter(filter value) để lưu vào section-->
@@ -680,7 +675,7 @@
 <div id="addEmployeeModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="CrudBookActionServlet" method="post" enctype="multipart/form-data">
+      <form action="CrudBook" method="post" enctype="multipart/form-data">
         <div class="modal-header">
           <h4 class="modal-title">Add New Book</h4>
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -721,7 +716,7 @@
         </div>
         <div class="modal-footer">
           <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-          <button type="submit" class="btn btn-success" name="btnAddBook" value="Add">Add</button>
+          <button type="submit" class="btn btn-success" name="btnAction" value="Add">Add</button>
         </div>
       </form>
     </div>

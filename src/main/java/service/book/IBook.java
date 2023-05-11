@@ -18,9 +18,7 @@ public interface IBook {
 
     public boolean deleteBook(String BookId);
 
-    public ArrayList<Book> getAllBooksPagination(int pageNo, int pageSize);
-
-    public ArrayList<Book> getListBooksPagination(int pageNo, int pageSize, ArrayList<Book> dsBooks);
+    public ArrayList<Book> getBooksWithPagination(int pageNo, int pageSize, String searchValue, String filterValue);
 
     public ArrayList<Book> searchBook(String key);
 

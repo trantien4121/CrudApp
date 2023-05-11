@@ -1,6 +1,5 @@
 package service.bookType;
 
-import Bean.BookTypeBean;
 import common.ConnectDb;
 import model.Book;
 import model.BookType;
@@ -32,8 +31,6 @@ public class IBookTypeImpl implements IBookType{
             rs.close();
             ps.close();
 
-//            connection.close();
-
             return dsBookType;
 
         } catch (SQLException e) {
@@ -42,11 +39,4 @@ public class IBookTypeImpl implements IBookType{
         }
     }
 
-    public static void main(String[] args) {
-        IBookType iBookType = new IBookTypeImpl();
-        ArrayList<BookType> dsBookTypes = iBookType.getAllBookTypes();
-        for(BookType bT: dsBookTypes){
-            System.out.println(bT.getBookType() + " -- " + bT.getBookTypeName());
-        }
-    }
 }

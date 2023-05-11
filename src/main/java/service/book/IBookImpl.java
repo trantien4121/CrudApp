@@ -1,7 +1,5 @@
 package service.book;
 
-import Bean.BookBean;
-import Dao.ConnectDB;
 import common.ConnectDb;
 import model.Book;
 
@@ -37,7 +35,6 @@ public class IBookImpl implements IBook {
 
             rs.close();
             ps.close();
-//            connection.close();
 
             return dsBook;
 
@@ -68,7 +65,6 @@ public class IBookImpl implements IBook {
 
             rs.close();
             ps.close();
-//            connection.close();
 
             return book;
 
@@ -97,7 +93,6 @@ public class IBookImpl implements IBook {
 
             int result = ps.executeUpdate();
             ps.close();
-//            connection.close();
 
             return (result > 0) ? addedBook : null;
         }
@@ -126,16 +121,8 @@ public class IBookImpl implements IBook {
 
             int result = ps.executeUpdate();
             ps.close();
-//            connection.close();
 
-            if(result > 0){
-                System.out.println("Update new book success!");
-                return updatedBook;
-            }
-            else{
-                System.out.println("Update book Failed!");
-                return null;
-            }
+            return (result > 0) ? updatedBook : null;
 
         }
         catch (Exception e){
@@ -152,7 +139,6 @@ public class IBookImpl implements IBook {
 
             int result = ps.executeUpdate();
             ps.close();
-//            connection.close();
 
             if(result > 0){
                 System.out.println("delete Book with bookId = " + bookId + " success!");
@@ -168,16 +154,51 @@ public class IBookImpl implements IBook {
         }
         return false;
     }
-    public ArrayList<Book> getAllBooksPagination(int pageNo, int pageSize){
+
+    public ArrayList<Book> getBooksWithPagination(int pageNo, int pageSize, String searchValue, String filterValue){
         ArrayList<Book> dsBook = new ArrayList<Book>();
         int limit = pageSize;
         int offset = (pageNo - 1) * 5;
+        String sql = "";
+
         try{
-            String sql = "select * from Book limit ? offset ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, limit);
-            ps.setInt(2, offset);
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs;
+            PreparedStatement ps = null;
+
+            if(searchValue.equals("") && filterValue.equals("")){
+                sql = "select * from Book limit ? offset ?";
+                ps = connection.prepareStatement(sql);
+                ps.setInt(1, limit);
+                ps.setInt(2, offset);
+                rs = ps.executeQuery();
+            }
+            else if(searchValue.equals("") && !filterValue.equals("")){
+                sql = "select * from Book where bookType=? limit ? offset ?";
+                ps = connection.prepareStatement(sql);
+                ps.setString(1, filterValue);
+                ps.setInt(2, limit);
+                ps.setInt(3, offset);
+                rs = ps.executeQuery();
+            }
+            else if(!searchValue.equals("") && filterValue.equals("")){
+                sql = "select * from Book where bookName like ? or author like ? limit ? offset ?";
+                ps = connection.prepareStatement(sql);
+                ps.setString(1, "%" + searchValue + "%");
+                ps.setString(2, "%" + searchValue + "%");
+                ps.setInt(3, limit);
+                ps.setInt(4, offset);
+                rs = ps.executeQuery();
+            }
+            else{
+                sql = "select * from Book  where bookType=? and (bookName like ? or author like ?) limit ? offset ?";
+                ps = connection.prepareStatement(sql);
+                ps.setString(1, filterValue);
+                ps.setString(2, "%" + searchValue + "%");
+                ps.setString(3, "%" + searchValue + "%");
+                ps.setInt(4, limit);
+                ps.setInt(5, offset);
+                rs = ps.executeQuery();
+            }
 
             //step3: save Data to dsBooks
             while(rs.next()){
@@ -201,42 +222,70 @@ public class IBookImpl implements IBook {
             return null;
         }
     }
-    public ArrayList<Book> getListBooksPagination(int pageNo, int pageSize, ArrayList<Book> dsBooks){
-        ArrayList<Book> pageData = new ArrayList<Book>();
 
-        int totalPages = (int) Math.ceil((double) dsBooks.size() / pageSize);
-        int startIndex = (pageNo - 1) * pageSize;
-        int endIndex = Math.min(startIndex + pageSize, dsBooks.size());
-        if (startIndex < dsBooks.size()) {
-            pageData = new ArrayList<Book>(dsBooks.subList(startIndex, endIndex));
-        }
-        return pageData;
-    }
     public ArrayList<Book> searchBook(String key){
         ArrayList<Book> dsBookSearch = new ArrayList<Book>();
-        IBook bookImpl = new IBookImpl();
-        ArrayList<Book> dsBook = new ArrayList<Book>();
-        dsBook = bookImpl.getAllBooks();
+        try {
+            String sql = "select * from Book where bookName like ? or author like ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, "%" + key + "%");
+            ps.setString(2, "%" + key + "%");
+            ResultSet rs = ps.executeQuery();
 
-        for(Book b: dsBook){
-            if(b.getBookName().toLowerCase().contains(key.toLowerCase()) ||
-                    b.getAuthor().toLowerCase().contains(key.toLowerCase()))
-                dsBookSearch.add(b);
+            while (rs.next()) {
+                String bookId = rs.getString("bookId");
+                String bookName = rs.getString("bookName");
+                String author = rs.getString("author");
+                int quantity = rs.getInt("quantity");
+                int price = rs.getInt("price");
+                String image = rs.getString("image");
+                String bookType = rs.getString("bookType");
+
+                dsBookSearch.add(new Book(bookId, bookName, author, quantity, price, image, bookType));
+            }
+
+            rs.close();
+            ps.close();
+
+            return dsBookSearch;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
-        return dsBookSearch;
     }
+
     public ArrayList<Book> filterBook(String filterVal){
         ArrayList<Book> dsBookFilter = new ArrayList<Book>();
-        IBook bookImpl = new IBookImpl();
-        ArrayList<Book> dsBook = new ArrayList<Book>();
-        dsBook = bookImpl.getAllBooks();
+        try {
+            String sql = "select * from Book where bookType=?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, filterVal);
+            ResultSet rs = ps.executeQuery();
 
-        for(Book b: dsBook){
-            if(b.getBookType().equals(filterVal))
-                dsBookFilter.add(b);
+            while (rs.next()) {
+                String bookId = rs.getString("bookId");
+                String bookName = rs.getString("bookName");
+                String author = rs.getString("author");
+                int quantity = rs.getInt("quantity");
+                int price = rs.getInt("price");
+                String image = rs.getString("image");
+                String bookType = rs.getString("bookType");
+
+                dsBookFilter.add(new Book(bookId, bookName, author, quantity, price, image, bookType));
+            }
+
+            rs.close();
+            ps.close();
+
+            return dsBookFilter;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
-        return dsBookFilter;
     }
+
     public ArrayList<Book> filterAndSearchBook(String key, String filerVal){
         ArrayList<Book> dsFilterSearch = new ArrayList<Book>();
         IBook bookImpl = new IBookImpl();
@@ -256,27 +305,4 @@ public class IBookImpl implements IBook {
         return dsFilterSearch;
     }
 
-    public static void main(String[] args) {
-        IBook iBook = new IBookImpl();
-//        ArrayList<Book> dsBook = iBook.getAllBooks();
-//        for(Book b: dsBook){
-//            System.out.println(b.getBookName());
-//        }
-
-//        Book b = iBook.getByBookId("bds01");
-//        System.out.println(b.getBookName());
-
-//        Book bAdd = iBook.addBook("bds08", "Cuộc sống ý nghĩa", "Nguyễn An", 12, 12000, "BookImages/b2.jpg", "DS");
-//        System.out.println(bAdd.getBookName());
-
-//        Book bUpdate = iBook.updateBook("bds08", "Thông điệp cuộc sông", "Nguyễn An", 12, 12000, "BookImages/b2.jpg", "DS");
-//        System.out.println(bUpdate.getBookName());
-
-//        iBook.deleteBook("qa");
-        ArrayList<Book> dsBook = iBook.filterAndSearchBook("Cuộc", "DS");
-                for(Book b: dsBook){
-            System.out.println(b.getBookName() + " -- " + b.getAuthor() + " -- " + b.getBookType());
-        }
-
-    }
 }
