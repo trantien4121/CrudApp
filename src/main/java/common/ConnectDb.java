@@ -26,7 +26,6 @@ public class ConnectDb {
         } catch (ClassNotFoundException e) {
             System.out.println("driver not found!");
             e.printStackTrace();
-
         }
         return null;
     }

@@ -12,7 +12,6 @@ import service.bookType.IBookType;
 import service.bookType.IBookTypeImpl;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +40,8 @@ public class BookController extends HttpServlet {
         ServletFileUpload upload = new ServletFileUpload(factory);
         try {
             List<FileItem> fileItems = upload.parseRequest(request);
-            FileItem btnItem = fileItems.get(fileItems.size()-1);   //lastItem
-            String action = btnItem.getString("UTF-8");    //Get value of lastItem (button)
+            FileItem btnItem = fileItems.get(fileItems.size()-1);   //lastItem (ActionButton)
+            String action = btnItem.getString();    //Get value of lastItem (value of Action Button)
 
             switch (action){
                 case "Add":
@@ -71,7 +70,7 @@ public class BookController extends HttpServlet {
                 break;
         }
 
-        response.sendRedirect(" home");
+        response.sendRedirect("home");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{

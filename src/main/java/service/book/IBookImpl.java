@@ -200,7 +200,6 @@ public class IBookImpl implements IBook {
                 rs = ps.executeQuery();
             }
 
-            //step3: save Data to dsBooks
             while(rs.next()){
                 String bookId = rs.getString("bookId");
                 String bookName = rs.getString("bookName");

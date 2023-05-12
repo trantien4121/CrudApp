@@ -86,10 +86,13 @@ public class HomeController extends HttpServlet {
         rd.forward(request, response);
     }
 
-    private void showPagination(HttpServletRequest request, HttpServletResponse response, String searchValue, String filterValue) throws ServletException, IOException {
+    private void showPagination(HttpServletRequest request, String searchValue, String filterValue){
         String page = request.getParameter("page");
 
+        //Lấy tổng số trang có được sau khi search/filter
         int totalPage = dsBook.size() / 5 + 1;
+
+        //Lấy số item có được sau search/filter
         int totalItems = dsBook.size();
 
         //Nếu lần đầu => mặc định curPage = 1, ngược lại thì lấy curPage = trang hiện tại
@@ -103,6 +106,7 @@ public class HomeController extends HttpServlet {
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("totalItems", totalItems);
 
+        //Set lại dsBook là danh sách trong từng trang sẽ hiển thị => Showing ${dsBook.size()} out of ${totalItems} entries
         request.setAttribute("dsBook", dsBook);
         request.setAttribute("dsBookType", dsBookType);
     }
@@ -113,6 +117,7 @@ public class HomeController extends HttpServlet {
         String key = "";
         String filterVal = "";
 
+        // Kiểm tra khi chuyển trang đã search/value chưa => check session keySession, filterVal session
         if (keySession == null) {
             keySession = "";
         }
@@ -144,23 +149,24 @@ public class HomeController extends HttpServlet {
         if (key != null) {
             request.setAttribute("filterValue", filterVal);
 
-            if (!key.equals("")) {  //Don't select filterValue and type searchValue => filterAndSearchBook(key, "")
+            if (!key.equals("")) {  // filterAndSearchBook(key, "")
+
                 request.setAttribute("value", key);
                 dsBook = bookImpl.filterAndSearchBook(key, filterVal);
-            } else if (!filterVal.equals("") && key.equals("")) {   //Select filterValue and dont't type searchValue => filterBook(filterVal)
+
+            } else if (!filterVal.equals("") && key.equals("")) {   // filterBook(filterVal)
+
                 dsBook = bookImpl.filterBook(filterVal);
+
             } else {  //Don't select filterValue and don't type searchValue
+
                 dsBook = bookImpl.getAllBooks();
+
             }
         }
-        int totalItems = dsBook.size();
 
-        //Sau khi search và filter, hiển thị phân trang với key và filterVal đã set ở trên
-        showPagination(request, response, key, filterVal);
-
-        request.setAttribute("dsBook", dsBook);
-        request.setAttribute("dsBookType", dsBookType);
-        request.setAttribute("totalItems", totalItems);
+        //Sau khi search và filter, hiển thị phân trang với key và filterVal đã set ở trên cùng với dsBook tương ứng
+        showPagination(request, key, filterVal);
 
         RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
         rd.forward(request, response);

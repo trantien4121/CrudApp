@@ -477,10 +477,12 @@
               <td>${b.getBookType()}</td>
 
               <td>
+                <!-- Call modal update book-->
                 <a href="#editEmployeeModal${b.getBookId()}" class="edit" data-toggle="modal"><i
                         class="material-icons"
                         data-toggle="tooltip"
                         title="Edit">&#xE254;</i></a>
+                <!-- Call modal delete 1 Book-->
                 <a href="#deleteEmployeeModal${b.getBookId()}" class="delete" data-toggle="modal"><i
                         class="material-icons"
                         data-toggle="tooltip"
@@ -552,10 +554,14 @@
                     <div class="form-group">
                       <select id="bookTypesUpdate" class="form-control" name="txtBookType">
                         <c:forEach var="bT" items="${dsBookType}">
-                          <c:if test="${b.getBookType() eq bT.getBookType()}">
-                            <option value="${bT.getBookType()}" selected>${bT.getBookTypeName()}</option>
-                          </c:if>
-                          <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                          <c:choose>
+                            <c:when test="${b.getBookType() eq bT.getBookType()}">
+                              <option value="${bT.getBookType()}" selected>${bT.getBookTypeName()}</option>
+                            </c:when>
+                            <c:otherwise>
+                              <option value="${bT.getBookType()}">${bT.getBookTypeName()}</option>
+                            </c:otherwise>
+                          </c:choose>
                         </c:forEach>
                       </select>
                     </div>
