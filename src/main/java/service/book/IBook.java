@@ -1,5 +1,6 @@
 package service.book;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import model.Book;
 
 import java.util.ArrayList;
@@ -7,6 +8,10 @@ import java.util.ArrayList;
 public interface IBook {
 
     ArrayList<Book> getAllBooks();
+
+    ArrayList<Book> checkCacheAndGetAllBooks();
+
+    void saveBookDataCacheString(String key);
 
     Book getByBookId(String bookId);
 

@@ -1,8 +1,13 @@
 package service.book;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import common.RedisCacheManager;
 import common.ConnectDb;
 import model.Book;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +18,12 @@ public class IBookImpl implements IBook {
 
     Connection connection = ConnectDb.connect();
 
+    private String appCacheKey = "myAppCache";
+    private String lstBookCacheKey = appCacheKey + ":lstBook";
+
     public ArrayList<Book> getAllBooks() {
         ArrayList<Book> dsBook = new ArrayList<Book>();
+
         try {
             String sql = "select * from Book";
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -42,6 +51,23 @@ public class IBookImpl implements IBook {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public ArrayList<Book> checkCacheAndGetAllBooks(){
+        ArrayList<Book> dsBook = null;
+
+        String lstBookJson = RedisCacheManager.getCache(lstBookCacheKey);
+        if (lstBookJson != null) {
+            try {
+                dsBook = new ObjectMapper().readValue(lstBookJson, new TypeReference<ArrayList<Book>>() {
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            saveBookDataCacheString(lstBookCacheKey);
+        }
+        return dsBook;
     }
 
     public Book getByBookId(String bookId) {
@@ -89,12 +115,15 @@ public class IBookImpl implements IBook {
             ps.setString(6, image);
             ps.setString(7, bookType);
 
-            addedBook = new Book(bookId, bookName, author, quantity, price, image, bookType);
-
             int result = ps.executeUpdate();
             ps.close();
 
-            return (result > 0) ? addedBook : null;
+            if(result > 0){
+                addedBook = new Book(bookId, bookName, author, quantity, price, image, bookType);
+                RedisCacheManager.delCache(lstBookCacheKey);
+                saveBookDataCacheString(lstBookCacheKey);
+            }
+            return addedBook;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -117,12 +146,17 @@ public class IBookImpl implements IBook {
             ps.setString(5, image);
             ps.setString(6, bookType);
             ps.setString(7, bookId);
-            updatedBook = new Book(bookId, bookName, author, quantity, price, image, bookType);
 
             int result = ps.executeUpdate();
             ps.close();
 
-            return (result > 0) ? updatedBook : null;
+            if(result > 0){
+                updatedBook = new Book(bookId, bookName, author, quantity, price, image, bookType);
+                RedisCacheManager.delCache(lstBookCacheKey);
+                saveBookDataCacheString(lstBookCacheKey);
+            }
+
+            return updatedBook;
 
         }
         catch (Exception e){
@@ -142,6 +176,8 @@ public class IBookImpl implements IBook {
 
             if(result > 0){
                 System.out.println("delete Book with bookId = " + bookId + " success!");
+                RedisCacheManager.delCache(lstBookCacheKey);
+                saveBookDataCacheString(lstBookCacheKey);
                 return true;
             }
             else{
@@ -149,6 +185,8 @@ public class IBookImpl implements IBook {
                 return false;
             }
 
+        } catch (SQLException e){
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -289,7 +327,7 @@ public class IBookImpl implements IBook {
         ArrayList<Book> dsFilterSearch = new ArrayList<Book>();
         IBook bookImpl = new IBookImpl();
         ArrayList<Book> dsBook = new ArrayList<Book>();
-        dsBook = bookImpl.getAllBooks();
+        dsBook = bookImpl.checkCacheAndGetAllBooks();
 
         for(Book b: dsBook){
             if(filerVal.equals("")){
@@ -304,4 +342,14 @@ public class IBookImpl implements IBook {
         return dsFilterSearch;
     }
 
+    public void saveBookDataCacheString(String key){
+        ArrayList<Book> dsBook = new IBookImpl().getAllBooks();
+        try {
+            String lstBookJson = new ObjectMapper().writeValueAsString(dsBook);
+            // Lưu giá trị vào cache với key tương ứng
+            RedisCacheManager.setCache(key, lstBookJson);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 }

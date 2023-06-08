@@ -1,5 +1,6 @@
 package Controller;
 
+import common.RedisCacheManager;
 import model.Book;
 import model.BookType;
 import service.book.IBook;
@@ -16,19 +17,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @WebServlet(name = "HomeController", urlPatterns = "/home")
 public class HomeController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private IBook bookImpl = new IBookImpl();
+    private IBook iBook = new IBookImpl();
 
-    private IBookType bookTypeImpl = new IBookTypeImpl();
+    private IBookType iBookType = new IBookTypeImpl();
 
-    private ArrayList<Book> dsBook = new ArrayList<Book>();
+    private ArrayList<Book> lstBook = new ArrayList<Book>();
 
-    private ArrayList<BookType> dsBookType = new ArrayList<BookType>();
+    private ArrayList<BookType> lstBookType = new ArrayList<BookType>();
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //set UTF-8
@@ -51,12 +55,11 @@ public class HomeController extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        dsBook = bookImpl.getAllBooks();
-        dsBookType = bookTypeImpl.getAllBookTypes();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
         // Chưa chuyển trang với action = SearchAndFilter => show tất cả
         if (request.getParameter("action") == null) {
+            lstBook = iBook.checkCacheAndGetAllBooks();
             showSearchAndFilter(request, response, "", "");
 
         }
@@ -68,38 +71,37 @@ public class HomeController extends HttpServlet {
             String filterValueSession = (String) session.getAttribute("filterValueSession");
             showSearchAndFilter(request, response, searchValueSession, filterValueSession);
         }
-
-        RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-        rd.forward(request, response);
     }
 
     private void showBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        dsBook = bookImpl.getAllBooks();
-        dsBookType = bookTypeImpl.getAllBookTypes();
-        int totalItems = dsBook.size();
+        lstBook = iBook.getAllBooks();
+        lstBookType = iBookType.getAllBookTypes();
 
-        request.setAttribute("dsBook", dsBook);
-        request.setAttribute("dsBookType", dsBookType);
+        int totalItems = lstBook.size();
+
+        request.setAttribute("dsBook", lstBook);
+        request.setAttribute("dsBookType", lstBookType);
         request.setAttribute("totalItems", totalItems);
 
         RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
         rd.forward(request, response);
     }
 
-    private void showPagination(HttpServletRequest request, String searchValue, String filterValue){
+    private void showPagination(HttpServletRequest request, String searchValue, String filterValue) {
         String page = request.getParameter("page");
 
         //Lấy tổng số trang có được sau khi search/filter
-        int totalPage = dsBook.size() / 5 + 1;
+        int totalPage = lstBook.size() / 5 + 1;
 
         //Lấy số item có được sau search/filter
-        int totalItems = dsBook.size();
+        int totalItems = lstBook.size();
 
         //Nếu lần đầu => mặc định curPage = 1, ngược lại thì lấy curPage = trang hiện tại
         int curPage = (page == null) ? 1 : Integer.parseInt(page);
 
-        //Hiển thị phân trang với tập dữ liệu dsBooks truyền vào.
-        dsBook = bookImpl.getBooksWithPagination(curPage, 5, searchValue, filterValue);
+        //Hiển thị phân trang với tập dữ liệu lstBooks truyền vào.
+        lstBook = iBook.getBooksWithPagination(curPage, 5, searchValue, filterValue);
+        lstBookType = iBookType.checkCacheAndGetAllBookTypes();
 
         //set curPage, totalPage, totalItems
         request.setAttribute("page", curPage);
@@ -107,8 +109,8 @@ public class HomeController extends HttpServlet {
         request.setAttribute("totalItems", totalItems);
 
         //Set lại dsBook là danh sách trong từng trang sẽ hiển thị => Showing ${dsBook.size()} out of ${totalItems} entries
-        request.setAttribute("dsBook", dsBook);
-        request.setAttribute("dsBookType", dsBookType);
+        request.setAttribute("dsBook", lstBook);
+        request.setAttribute("dsBookType", lstBookType);
     }
 
     private void showSearchAndFilter(HttpServletRequest request, HttpServletResponse response,
@@ -152,24 +154,31 @@ public class HomeController extends HttpServlet {
             if (!key.equals("")) {  // filterAndSearchBook(key, "")
 
                 request.setAttribute("value", key);
-                dsBook = bookImpl.filterAndSearchBook(key, filterVal);
+                lstBook = iBook.filterAndSearchBook(key, filterVal);
 
             } else if (!filterVal.equals("") && key.equals("")) {   // filterBook(filterVal)
 
-                dsBook = bookImpl.filterBook(filterVal);
+                lstBook = iBook.filterBook(filterVal);
 
             } else {  //Don't select filterValue and don't type searchValue
 
-                dsBook = bookImpl.getAllBooks();
+                //check Book on cache and get Book data
+                lstBook = iBook.checkCacheAndGetAllBooks();
 
             }
         }
 
+        RedisCacheManager.updateCacheAsSortedSet("searchHistory", key);
+
         //Sau khi search và filter, hiển thị phân trang với key và filterVal đã set ở trên cùng với dsBook tương ứng
         showPagination(request, key, filterVal);
+
+        List<String> searchHistory = RedisCacheManager.getPopularCacheAsSortedSet("searchHistory", 5);
+        request.setAttribute("searchHistory", searchHistory);
 
         RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
         rd.forward(request, response);
     }
+
 
 }

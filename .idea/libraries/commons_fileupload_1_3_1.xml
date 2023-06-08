@@ -1,8 +1,11 @@
 <component name="libraryTable">
   <library name="commons-fileupload-1.3.1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../Jar/commons-fileupload-1.3.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../Jar/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Jar/jedis-4.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Jar/mysql-connector-j-8.0.32.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Jar/taglibs-standard-impl-1.2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Jar/taglibs-standard-spec-1.2.5.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

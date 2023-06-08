@@ -1,0 +1,15 @@
+service\bookType\IBookTypeImpl.class
+Controller\TestController.class
+Controller\HomeController.class
+Controller\BookController.class
+common\CacheManager.class
+service\book\IBookImpl.class
+service\bookType\IBookType.class
+service\book\IBook.class
+model\Book.class
+model\BookType.class
+service\book\IBookImpl$1.class
+common\ConnectDb.class
+service\bookType\IBookTypeImpl$1.class
+common\RedisCache.class
+common\ReadPropertiesLibrary.class

@@ -25,13 +25,13 @@ import java.util.List;
 public class BookController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private IBook bookImpl = new IBookImpl();
+    private IBook iBook = new IBookImpl();
 
-    private IBookType bookTypeImpl = new IBookTypeImpl();
+    private IBookType iBookType = new IBookTypeImpl();
 
-    private ArrayList<Book> dsBook = new ArrayList<Book>();
+    private ArrayList<Book> lstBook = new ArrayList<Book>();
 
-    private ArrayList<BookType> dsBookType = new ArrayList<BookType>();
+    private ArrayList<BookType> lstBookType = new ArrayList<BookType>();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 
@@ -101,7 +101,7 @@ public class BookController extends HttpServlet {
                 if (!imageName.equals("")) {
 
                     // Lấy đường dẫn
-                    String dirUrl = "C:\\TienTran\\demo (1)\\Crud\\web\\BookImages";
+                    String dirUrl = "C:\\TienTran\\demo\\Crud\\web\\BookImages";
                     imagePath = "BookImages/" + imageName;
                     File dir = new File(dirUrl);
 
@@ -152,7 +152,7 @@ public class BookController extends HttpServlet {
         }
 
         //Add Book
-        bookImpl.addBook(bookId, bookName, author, quantity, price, imagePath, bookType);
+        iBook.addBook(bookId, bookName, author, quantity, price, imagePath, bookType);
     }
     private void updateBook(HttpServletRequest request, HttpServletResponse response, List<FileItem> fileItems) throws IOException{
         String bookId = "";
@@ -180,7 +180,7 @@ public class BookController extends HttpServlet {
 
                     // Lấy đường dẫn
 
-                    String dirUrl = "C:\\TienTran\\demo (1)\\Crud\\web\\BookImages";
+                    String dirUrl = "C:\\TienTran\\demo\\Crud\\web\\BookImages";
                     imagePath = "BookImages/" + imageName;
                     File dir = new File(dirUrl);
 
@@ -232,20 +232,20 @@ public class BookController extends HttpServlet {
 
         //Nếu có update ảnh
         if(!imageName.equals("")){
-            Book updatedBook = bookImpl.updateBook(bookId, bookName, author, quantity, price, imagePath, bookType);
+            Book updatedBook = iBook.updateBook(bookId, bookName, author, quantity, price, imagePath, bookType);
         }
         //Nếu không update ảnh
         else{
-            Book bGet = bookImpl.getByBookId(bookId);
+            Book bGet = iBook.getByBookId(bookId);
             String curImagePath = bGet.getImage();
-            Book updatedBook = bookImpl.updateBook(bookId, bookName, author, quantity, price, curImagePath, bookType);
+            Book updatedBook = iBook.updateBook(bookId, bookName, author, quantity, price, curImagePath, bookType);
         }
     }
     private void deleteListBook(HttpServletRequest request, HttpServletResponse response){
         if(request.getParameterValues("bookItems") != null){
             String[] dsDeletedBookId = request.getParameterValues("bookItems");
             for(String dB : dsDeletedBookId){
-                bookImpl.deleteBook(dB);
+                iBook.deleteBook(dB);
             }
         }
     }
@@ -253,7 +253,7 @@ public class BookController extends HttpServlet {
         if(request.getParameter("btnActionDelete")!=null){
             String value = request.getParameter("btnActionDelete");
             if(!value.equals("deleteListBook")){
-                bookImpl.deleteBook(value);
+                iBook.deleteBook(value);
             }
         }
     }

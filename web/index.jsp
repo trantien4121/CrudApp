@@ -359,6 +359,45 @@
     .modal form label {
       font-weight: normal;
     }
+    /*Search history*/
+    .header__search-history{
+      position: absolute;
+      top: calc(100% + 3px);
+      left: 0;
+      width: calc(100% - 37px);
+      background-color: #fff;
+      border-radius: 0px;
+      box-shadow: 0 1px 5px rgb(189, 189, 189);
+      display: none;
+      overflow: hidden;
+      z-index: 1;
+      font-family: 'Varela Round', sans-serif;
+    }
+    .header__search-history-heading{
+      margin: 6px 12px;
+      font-size: 12px;
+      color: #999;
+      font-weight: 400;
+    }
+    .header__search-history-list{
+      padding-left: 0;
+      list-style: none;
+      margin: 6px 0 0;
+    }
+    .header__search-history-item{
+      height: 38px;
+      padding: 0 12px;
+    }
+    .header__search-history-item:hover{
+      background-color: #fafafa;
+    }
+    .header__search-history-item a{
+      text-decoration: none;
+      font-size: 12px;
+      line-height: 38px;
+      color: black;
+      display: block;
+    }
   </style>
   <script>
     $(document).ready(function () {
@@ -383,6 +422,31 @@
           $("#selectAll").prop("checked", false);
         }
       });
+
+      //show search history
+      $('.searchTerm').focus(function () {
+        $('.header__search-history').css('display', 'block');
+      }).blur(function () {
+        $('.header__search-history').css('display', 'none');
+      });
+
+      //click history item and load to search Input
+      $('.historyItem').each(function() {
+        $(this).on('click', function(e) {
+          e.preventDefault();
+          $('.searchTerm').val($(this).text());
+        });
+      });
+
+      // const items = document.querySelectorAll('.historyItem')
+      // console.log(items);
+      // items.forEach(ele => {
+      //   ele.addEventListener("click", function (e) {
+      //     e.preventDefault();
+      //     document.querySelector('.searchTerm').value = ele.innerText;
+      //   })
+      // })
+
     });
   </script>
 </head>
@@ -408,6 +472,17 @@
                   <button type="submit" class="searchButton" value="search">
                     <i class="fa fa-search"></i>
                   </button>
+                </div>
+                <!-- Search history -->
+                <div class="header__search-history">
+                  <h3 class="header__search-history-heading">Lịch sử tìm kiếm</h3>
+                  <ul class="header__search-history-list">
+                    <c:forEach var="sh" items="${searchHistory}">
+                      <li class="header__search-history-item">
+                        <a href="" class="historyItem">${sh}</a>
+                      </li>
+                    </c:forEach>
+                  </ul>
                 </div>
               </div>
 
